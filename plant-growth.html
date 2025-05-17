@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Plant Growth Tracker</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+    .header {
+      background-image: url('header.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: #2c2c2c;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 3em;
+      margin: 0;
+    }
+    .header h2 {
+      font-size: 1.5em;
+      margin: 10px 0 0;
+      color: #8B0000;
+    }
+    .content {
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      padding: 40px;
+      min-height: 100vh;
+      text-align: center;
+    }
+    input[type="number"] {
+      padding: 10px;
+      margin: 10px;
+      font-size: 1em;
+      border-radius: 15px;
+      border: 2px solid #333;
+      width: 250px;
+    }
+    button {
+      padding: 10px 25px;
+      font-size: 1em;
+      margin-top: 20px;
+      border: none;
+      background-color: #2e8b57;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #result, #chart-container {
+      margin-top: 30px;
+      font-size: 1.2em;
+      color: #333;
+    }
+    canvas {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Welcome to our Smart Green House</h1>
+  <h2>Enter plant height (in cm) at the end of each week</h2>
+</div>
+
+<div class="content">
+  <input type="number" id="week1" placeholder="Week1" />
+  <br />
+  <input type="number" id="week2" placeholder="Week2" />
+  <br />
+  <input type="number" id="week3" placeholder="Week3" />
+  <br />
+  <button onclick="calculateGrowth()">Calculate Growth Rate</button>
+
+  <div id="result"></div>
+  <div id="chart-container">
+    <canvas id="growthChart" width="400" height="200"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  function calculateGrowth() {
+    const w1 = parseFloat(document.getElementById('week1').value);
+    const w2 = parseFloat(document.getElementById('week2').value);
+    const w3 = parseFloat(document.getElementById('week3').value);
+    if (isNaN(w1) || isNaN(w2) || isNaN(w3)) {
+      alert("Please enter valid numbers for all three weeks.");
+      return;
+    }
+    const rate1 = w2 - w1;
+    const rate2 = w3 - w2;
+    const avgGrowth = ((rate1 + rate2) / 2).toFixed(2);
+    document.getElementById('result').innerText = "Average weekly growth rate: " + avgGrowth + " cm";
+
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3'],
+        datasets: [{
+          label: 'Plant Height (cm)',
+          data: [w1, w2, w3],
+          borderColor: 'green',
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+</script>
+</body>
+</html>
